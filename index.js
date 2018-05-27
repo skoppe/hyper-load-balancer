@@ -15,7 +15,8 @@ let output = {
   websites: []
 }
 
-let url = 'https://us-west-1.hyper.sh/containers/json'
+let region = process.env.HYPER_REGION;
+let url = `https://${region}.hyper.sh/containers/json`
 const headers = aws4.sign(Object.assign({}, {url}, signOption))
 let containers = fetch(url, {method: signOption.method, headers}).then((res) => {
     return res.json()
@@ -23,7 +24,7 @@ let containers = fetch(url, {method: signOption.method, headers}).then((res) => 
 
 let containersInfo = containers.then((containers_) => {
     return Promise.all(containers_.map(con => {
-      let url = `https://us-west-1.hyper.sh/containers/${con.Id}/json`
+      let url = `https://${region}.hyper.sh/containers/${con.Id}/json`
       const headers = aws4.sign(Object.assign({}, {url}, signOption))
       return fetch(url, {method: signOption.method, headers}).then((res) => {
           return res.json()
